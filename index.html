@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qalbu — Quran Verses for Your Mood</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      transition: background 0.5s ease;
+    }
+
+    .app {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(18px);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 480px;
+      padding: 28px;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.35);
+    }
+
+    h1 { text-align: center; font-size: 1.9rem; margin-bottom: 6px; }
+    .subtitle { text-align: center; font-size: 0.9rem; opacity: 0.85; margin-bottom: 22px; }
+
+    .moods {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .mood-btn {
+      background: rgba(255,255,255,0.18);
+      border: none;
+      border-radius: 16px;
+      padding: 18px 10px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .mood-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.3);
+    }
+
+    .result {
+      background: rgba(0,0,0,0.35);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .arabic {
+      font-size: 1.25rem;
+      line-height: 1.9;
+      margin-bottom: 14px;
+      direction: rtl;
+      font-family: 'Amiri', serif;
+    }
+
+    .translation {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .reference {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-bottom: 14px;
+    }
+
+    .again {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.6);
+      color: #fff;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>🕌 Qalbu</h1>
+    <p class="subtitle">Find peace through the Quran</p>
+
+    <div class="moods" id="moods">
+      <button class="mood-btn" data-mood="sad">😢 Sad</button>
+      <button class="mood-btn" data-mood="anxious">😰 Anxious</button>
+      <button class="mood-btn" data-mood="grateful">🙏 Grateful</button>
+      <button class="mood-btn" data-mood="angry">😠 Angry</button>
+      <button class="mood-btn" data-mood="lost">😔 Lost</button>
+      <button class="mood-btn" data-mood="hopeful">🌤️ Hopeful</button>
+    </div>
+
+    <div class="result" id="result">
+      <div class="arabic" id="arabic"></div>
+      <div class="translation" id="translation"></div>
+      <div class="reference" id="reference"></div>
+      <button class="again" onclick="resetApp()">Choose another mood</button>
+    </div>
+
+    <footer>Quran verses • Reflection & comfort</footer>
+  </div>
+
+  <script>
+    const verses = {
+      sad: [
+        {
+          ar: 'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا',
+          en: 'Indeed, with hardship comes ease.',
+          ref: 'Surah Ash-Sharh (94:6)'
+        }
+      ],
+      anxious: [
+        {
+          ar: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
+          en: 'Surely in the remembrance of Allah do hearts find rest.',
+          ref: 'Surah Ar-Ra’d (13:28)'
+        }
+      ],
+      grateful: [
+        {
+          ar: 'لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ',
+          en: 'If you are grateful, I will surely increase you.',
+          ref: 'Surah Ibrahim (14:7)'
+        }
+      ],
+      angry: [
+        {
+          ar: 'وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ',
+          en: 'Those who restrain anger and pardon people.',
+          ref: 'Surah Ali ‘Imran (3:134)'
+        }
+      ],
+      lost: [
+        {
+          ar: 'وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ',
+          en: 'Whoever puts their trust in Allah, He is sufficient for them.',
+          ref: 'Surah At-Talaq (65:3)'
+        }
+      ],
+      hopeful: [
+        {
+          ar: 'إِنَّ رَحْمَتَ اللَّهِ قَرِيبٌ مِّنَ الْمُحْسِنِينَ',
+          en: 'Indeed, the mercy of Allah is near to the doers of good.',
+          ref: 'Surah Al-A’raf (7:56)'
+        }
+      ]
+    };
+
+    const moodsBox = document.getElementById('moods');
+    const resultBox = document.getElementById('result');
+    const arabicEl = document.getElementById('arabic');
+    const translationEl = document.getElementById('translation');
+    const referenceEl = document.getElementById('reference');
+
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.onclick = () => {
+        const mood = btn.dataset.mood;
+        const pick = verses[mood][0];
+
+        arabicEl.textContent = pick.ar;
+        translationEl.textContent = pick.en;
+        referenceEl.textContent = pick.ref;
+
+        moodsBox.style.display = 'none';
+        resultBox.style.display = 'block';
+      };
+    });
+
+    function resetApp() {
+      resultBox.style.display = 'none';
+      moodsBox.style.display = 'grid';
+    }
+  </script>
+</body>
+</html>
